@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B.Sc. Gallery</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+header{
+    background:#003366;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:30px auto;
+}
+
+h2{
+    margin-bottom:20px;
+    color:#003366;
+}
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 5px 12px rgba(0,0,0,.15);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card img{
+    width:100%;
+    height:230px;
+    object-fit:cover;
+    cursor:pointer;
+}
+
+.caption{
+    padding:12px;
+    text-align:center;
+    font-weight:bold;
+}
+
+/* Lightbox */
+
+.lightbox{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.9);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+}
+
+.lightbox img{
+    max-width:90%;
+    max-height:90%;
+}
+
+.lightbox span{
+    position:absolute;
+    top:20px;
+    right:35px;
+    color:white;
+    font-size:40px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>B.Sc. Department Gallery</h1>
+
+<p>Shri Un Vibhag Kelvani Mandal Sanchalit Science College, Un</p>
+
+</header>
+
+<div class="container">
+
+<h2>Gallery</h2>
+
+<div class="gallery" id="gallery"></div>
+
+</div>
+
+<div class="lightbox" id="lightbox">
+
+<span onclick="closeImage()">&times;</span>
+
+<img id="largeImage">
+
+</div>
+
+<script>
+
+const username="scicolun";
+
+const repo="811";
+
+const folder="bsc/gallery";
+
+fetch(`https://api.github.com/repos/${username}/${repo}/contents/${folder}`)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+const gallery=document.getElementById("gallery");
+
+data.forEach(file=>{
+
+if(file.type==="file"){
+
+if(file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)){
+
+const card=document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=`
+
+<img src="${file.download_url}" onclick="showImage('${file.download_url}')">
+
+<div class="caption">
+
+${file.name}
+
+</div>
+
+`;
+
+gallery.appendChild(card);
+
+}
+
+}
+
+});
+
+});
+
+function showImage(src){
+
+document.getElementById("largeImage").src=src;
+
+document.getElementById("lightbox").style.display="flex";
+
+}
+
+function closeImage(){
+
+document.getElementById("lightbox").style.display="none";
+
+}
+
+</script>
+
+</body>
+</html>
